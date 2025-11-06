@@ -3,6 +3,7 @@ import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import styles from "@/app/ui/home.module.css";
 import {lusitana} from "@/app/ui/fonts";``
+import { Button } from './ui/button';
 
 export default function Page() {
   // const features list = [
@@ -36,7 +37,7 @@ export default function Page() {
         </h2>
         <p className='text-sm'>Create, send and track invoices effortlessly. Get paid faster with automated reminders and professional templates</p>
       </div>
-      <div>
+      <div className=''>
 
       </div>
     </div>
