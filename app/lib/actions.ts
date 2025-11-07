@@ -2,8 +2,6 @@
 
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
- 
-
 import { z } from "zod";
 import postgres from "postgres";
 import { revalidatePath } from "next/cache";
@@ -12,6 +10,26 @@ import bcrypt from "bcrypt";
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: "require" });
 
+
+// schemas
+const signUpSchema = z.object({
+  name: z.string().min(2,"Name must be at least 2 characters"),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6,"password must be at least 6 characters")
+})
+
+const FormSchema = z.object({
+  id: z.string(),
+  customerId: z.string(),
+  amount: z.coerce.number(),
+  status: z.enum(["pending", "paid"]),
+  date: z.string(),
+});
+
+const CreateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+
+// functions
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData
@@ -30,16 +48,30 @@ export async function authenticate(
     throw error;
   }
 }
+export async function signUp(formData:FormData){
+const validatedFields = signUpSchema.safeParse({
+  name: formData.get('name'),
+  email: formData.get('email'),
+  password: formData.get('password')
+})
 
-const FormSchema = z.object({
-  id: z.string(),
-  customerId: z.string(),
-  amount: z.coerce.number(),
-  status: z.enum(["pending", "paid"]),
-  date: z.string(),
-});
-const CreateInvoice = FormSchema.omit({ id: true, date: true });
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+if (!validatedFields.success){
+  return {
+    errors: validatedFields.error.flatten().fieldErrors,
+    message: "Fialed to create account"
+  };
+}
+const { name, email, password } = validatedFields.data;
+try{
+  const existingUser = await sql `
+  SELECT * FROM users WHERE email = ${email}`
+}
+catch(error){
+  return{
+    message: "Database Error: Failed to create account"
+  }
+}
+}
 
 export async function createInvoice(formData: FormData) {
   const { customerId, amount, status } = CreateInvoice.parse({
@@ -99,3 +131,5 @@ export async function deleteInvoice(id: string) {
   `;
   revalidatePath("/dashboard/invoices");
 }
+
+
