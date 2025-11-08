@@ -16,7 +16,7 @@ export default function Page() {
       <div >
     <header className='flex justify-between'>
       <div>
-        <div><p>i</p></div>
+        <div><p>iH</p></div>
         <p>Invoice Hub</p>
       </div>
 
