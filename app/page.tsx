@@ -6,11 +6,11 @@ import {lusitana} from "@/app/ui/fonts";``
 import { Button } from './ui/button';
 
 export default function Page() {
-  // const features list = [
-  //   {
-  //     icon:
-  //   }
-  // ]
+  const features_list = [
+    {
+     
+    }
+  ]
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div >
