@@ -8,7 +8,6 @@ import Link from 'next/link';
 
 
 export default function singUpForm(){
-  const [state,formAction,isPending] = useActionState(signUp,undefined);
 
   return(
     <form action={formAction} className="space-y-3"></form>
